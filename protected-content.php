@@ -102,6 +102,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Controller_Admin_Bar' => 'class-ms-controller-admin-bar.php',
 		'MS_Controller_Membership_Content_Type' => 'membership/class-ms-controller-membership-content-type.php',
 		'MS_Controller_Membership_Metabox' => 'class-ms-controller-membership-metabox.php',
+		'MS_Controller_Invite_Code' => 'class-ms-controller-invite-code.php'
 	);
 
 	// HELPERS
@@ -116,6 +117,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Helper_List_Table_Rule_Url_Group' => 'list-table/rule/class-ms-helper-list-table-rule-url-group.php',
 		'MS_Helper_List_Table_Rule_Replace_Menu' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menu.php',
 		'MS_Helper_List_Table_Rule_Replace_Menulocation' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menulocation.php',
+		'MS_Helper_List_Table_Invite_Codes' => 'list-table/class-ms-helper-list-table-invitecodes.php',
 	);
 
 	// MODELS
@@ -141,6 +143,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
 		'MS_Model_Rule_Replace_Menulocation' => 'rule/class-ms-model-rule-replace-menulocation.php',
 		'MS_Model_Membership_Relationship' => 'class-ms-model-membership_relationship.php',
+		'MS_Model_Invite_Code' => 'class-ms-model-invitecode.php',
 	);
 
 	// VIEWS
@@ -158,6 +161,8 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_View_Shortcode_Membership_Signup' => 'shortcode/class-ms-view-shortcode-membership-signup.php',
 		'MS_View_Shortcode_Membership_Login' => 'shortcode/class-ms-view-shortcode-membership-login.php',
 		'MS_View_Shortcode_Membership_Register_User' => 'shortcode/class-ms-view-shortcode-membership-register-user.php',
+		'MS_View_Invite_Codes_List' => 'invitecodes/class-ms-view-invitecodes-list.php',
+		'MS_View_Invite_Codes_Edit' => 'invitecodes/class-ms-view-invitecodes-edit.php',
 	);
 
 	foreach ( $controllers as $key => $path ) { $overrides[ $key ] = $controllers_base . $path; }
@@ -428,6 +433,7 @@ class MS_Plugin {
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
+				//MS_Model_Invite_Code::$POST_TYPE => MS_Model_Invite_Code::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
 			)
 		);
