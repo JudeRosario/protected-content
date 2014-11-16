@@ -61,6 +61,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';
 	const ADDON_ADV_MENUS = 'adv_menus';
+	const ADDON_INVITE_CODES = 'invite_codes';
 
 	/**
 	 * Add-ons array.
@@ -98,6 +99,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_AUTO_MSGS_PLUS,
 				self::ADDON_SPECIAL_PAGES,
 				self::ADDON_ADV_MENUS,
+				self::ADDON_INVITE_CODES
 			);
 		}
 
@@ -254,6 +256,11 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_ADV_MENUS] = (object) array(
 			'name' => __( 'Advanced menu protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_INVITE_CODES] = (object) array(
+			'name' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
+			'description' => __( 'Option to allow signups using invite codes. Invite codes can be tied to specific subscriptions and can be mafe mandatory for signups.', MS_TEXT_DOMAIN ),
 		);
 
 		foreach ( $list as $key => $data ) {
