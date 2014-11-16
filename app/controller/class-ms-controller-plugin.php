@@ -101,7 +101,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
 		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
-		$this->controllers['invitecodes'] = MS_Factory::create( 'MS_Controller_Invite_Codes' );
+		$this->controllers['invitecodes'] = MS_Factory::create( 'MS_Controller_Invite_Code' );
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
 		$this->controllers['page'] = MS_Factory::create( 'MS_Controller_Page' );
@@ -226,7 +226,7 @@ class MS_Controller_Plugin extends MS_Controller {
 					'page_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
 					'menu_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
 					'menu_slug' => self::MENU_SLUG . '-invitecodes',
-					'function' => array( $this->controllers['invitecodes'], 'admin_coupon' ),
+					'function' => array( $this->controllers['invitecodes'], 'admin_invite_code' ),
 				),
 				'addon' => array(
 					'parent_slug' => self::MENU_SLUG,
@@ -246,6 +246,10 @@ class MS_Controller_Plugin extends MS_Controller {
 
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 				unset( $pages['coupons'] );
+			}
+			
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ) ) {
+				unset( $pages['invitecodes'] );
 			}
 		}
 
