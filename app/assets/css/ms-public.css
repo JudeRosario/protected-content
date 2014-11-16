@@ -1,0 +1,282 @@
+/**
+ * Collects all SASS files into a single css file.
+ *
+ * https://make.wordpress.org/core/handbook/coding-standards/css/
+ * The coding standard is applied to the SASS source files and formatting might
+ * be slightly changed by compilation into CSS files. However, there is a
+ * expanded dev-version of the CSS files and also a minified version without
+ * any comments.
+ */
+/**
+ * Admin-Bar module.
+ */
+#wpadminbar.simulation-mode {
+  background: #223D52;
+}
+
+#wpadminbar #wp-toolbar {
+  /* Button: Start/Stop Test-Mode */
+  /* Mode: View-Site-As */
+  /* General styles */
+}
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item {
+  position: relative;
+  display: block;
+  background-color: transparent;
+  color: #F0F0F0;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  bottom: 3px;
+  right: 3px;
+  margin: 0;
+  z-index: -1;
+  background-color: #0A6C9C;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item {
+  color: #FFF;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after {
+  background-color: #0094DC;
+}
+#wpadminbar #wp-toolbar .ms-exit-memberships {
+  position: absolute;
+  right: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period {
+  margin-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-date,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-date {
+  display: inline;
+  width: 105px;
+  padding-right: 25px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-small,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-small {
+  display: inline;
+  width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-simulate-info,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-simulate-info {
+  padding-left: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
+#wpadminbar #wp-toolbar .membership-view-site-as input,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
+  height: 23px;
+  line-height: 21px;
+  margin: 4px;
+  box-sizing: border-box;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+  margin: 0;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+  line-height: 24px;
+  height: 24px;
+  width: 18px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-view-site-as input {
+  padding: 2px;
+  text-align: center;
+  border: none;
+  min-width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-view-site-as select {
+  margin-right: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-view-site-as button {
+  padding: 0 15px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period form,
+#wpadminbar #wp-toolbar .membership-simulate-period div,
+#wpadminbar #wp-toolbar .membership-simulate-period div.ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as form,
+#wpadminbar #wp-toolbar .membership-view-site-as div,
+#wpadminbar #wp-toolbar .membership-view-site-as div.ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
+  display: inline;
+  max-height: 32px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
+  font-size: 12px;
+  padding: 0 0 0 15px;
+  color: #aaa;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period:hover > .ab-item {
+  background-color: inherit;
+  color: inherit;
+}
+
+/**
+ * Shortcode Styles
+ */
+.ms-membership-form-wrapper legend {
+  display: block;
+  margin-bottom: 20px;
+  padding: 0;
+  width: 100%;
+  border-bottom: 1px solid #DDDDDD;
+  font-size: 1.6em;
+}
+.ms-membership-form-wrapper label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ms-membership-details-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 99%;
+  margin: 1em 0;
+  border: 1px solid #DDD;
+}
+
+.ms-alert-box {
+  padding: 10px 30px 10px 15px;
+  margin-bottom: 20px;
+  background-color: #fbfce3;
+  border: 1px solid #ecf088;
+  border-radius: 4px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  color: #c09853;
+}
+.ms-alert-box.ms-alert-success {
+  color: #468847;
+  background-color: #DEF7E4;
+  border-color: #8DE3A1;
+}
+.ms-alert-box.ms-alert-error {
+  color: #B94A48;
+  background-color: #FCE5E3;
+  border-color: #F28F87;
+}
+
+.ms-top-bar {
+  position: relative;
+  background: #eee;
+  padding: 10px;
+  min-height: 2em;
+  text-align: left;
+  color: #434343;
+  overflow: hidden;
+}
+
+.ms-bottom-bar {
+  position: relative;
+  padding: 10px;
+  overflow: hidden;
+  background: #f6f6f6;
+  color: #434343;
+}
+
+.ms-price-details {
+  position: relative;
+  padding: 10px;
+  min-height: 1em;
+  list-style-type: none;
+}
+
+.ms-signup-button {
+  float: right;
+  height: auto;
+}
+
+.ms-form-element {
+  margin: 1em;
+}
+
+.ms-form-element label {
+  display: inline;
+}
+
+.ms-form-element span {
+  display: inline;
+}
+
+.ms-form-element input {
+  margin: 0 0 0 1em;
+  float: right;
+}
+
+/* jQuery validation */
+.ms-validation-error {
+  color: #e46c6e !important;
+}
+
+label.ms-validation-error {
+  background: #ffefef;
+  border: 1px solid #ffd2d2;
+  color: #666;
+  font-size: 0.8em;
+  margin: 5px;
+  padding: 2px;
+  position: absolute;
+  width: auto;
+  border-radius: 3px;
+}
+label.ms-validation-error:before {
+  content: '';
+  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
+  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+  background-position: -640px -138px;
+  display: inline-block;
+  height: 20px;
+  position: relative;
+  top: 1px;
+  width: 20px;
+}
+
+/* Login Form */
+.ms-login-form {
+  margin: 1em;
+}
+.ms-login-form input {
+  float: right;
+}
+.ms-login-form input[type="checkbox"] {
+  float: none;
+}
+
+/* Account */
+.ms-card-info-wrapper {
+  margin: 20px 0;
+}
+
+.ms-edit-profile {
+  float: right;
+  font-weight: 100;
+}
+
+
+/* 16390-1415995447 */
