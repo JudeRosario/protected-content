@@ -43,7 +43,7 @@ class MS_View_Invite_Codes_List extends MS_View {
 		$add_new_button = array(
 				'id' => 'add_new',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				//'url' => sprintf( 'admin.php?page=%s&action=edit&coupon_id=0', MS_Controller_Plugin::MENU_SLUG . '-coupons' ),
+				'url' => sprintf( 'admin.php?page=%s&action=edit&invite_id=0', MS_Controller_Plugin::MENU_SLUG . '-invitecodes' ),
 				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
 				'class' => 'button',
 		);

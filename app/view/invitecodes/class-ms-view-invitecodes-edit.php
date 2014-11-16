@@ -17,13 +17,13 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 		?>
 			<div class='ms-wrap'>
 				<?php
-					$text = $this->data['coupon']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
+					$text = $this->data['invite_code']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
 						'title' => sprintf( __( ' %s Coupon', MS_TEXT_DOMAIN ), $text ),
 						'title_icon_class' => 'ms-fa ms-fa-pencil-square',
 					) );
 				?>
-				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
+				<form action="<?php echo remove_query_arg( array( 'action', 'invite_id' ) ); ?>" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
 				<div class="clear"></div>
@@ -31,7 +31,7 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_coupon_edit_to_html', $html, $this );
+		return apply_filters( 'ms_view_invite_codes_edit_to_html', $html, $this );
 	}
 
 	/**
@@ -42,58 +42,45 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 	 * @return array
 	 */
 	function prepare_fields() {
-		$coupon = $this->data['coupon'];
+		$invite_code = $this->data['invite_code'];
 		$fields = array(
-			'code' => array(
+			'invite_code' => array(
 					'id' => 'code',
-					'title' => __( 'Coupon code', MS_TEXT_DOMAIN ),
+					'title' => __( 'Invite code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->code,
-			),
-			'discount' => array(
-					'id' => 'discount',
-					'title' => __( 'Discount', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->discount,
-			),
-			'discount_type' => array(
-					'id' => 'discount_type',
-					'title' => __( 'Discount Type', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'field_options' => $coupon->get_discount_types(),
-					'value' => $coupon->discount,
+					'value' => $invite_code->invite_code,
 			),
 			'start_date' => array(
 					'id' => 'start_date',
 					'title' => __( 'Start date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => ( $coupon->start_date ) ? $coupon->start_date : MS_Helper_Period::current_date(),
+					'value' => ( $invite_code->start_date ) ? $invite_code->start_date : MS_Helper_Period::current_date(),
 					'class' => 'ms-date',
 			),
-			'expire_date' => array(
-					'id' => 'expire_date',
-					'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
+			'expiry_date' => array(
+					'id' => 'expiry_date',
+					'title' => __( 'Expiry date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->expire_date,
+					'value' => $invite_code->expiry_date,
 					'class' => 'ms-date',
 			),
-			'membership_id' => array(
-					'id' => 'membership_id',
+			'membership_type' => array(
+					'id' => 'membership_type',
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $this->data['memberships'],
-					'value' => $coupon->membership_id,
+					'value' => $invite_code->membership_type,
 			),
 			'max_uses' => array(
 					'id' => 'max_uses',
 					'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->max_uses,
+					'value' => $invite_code->max_uses,
 			),
 			'coupon_id' => array(
 					'id' => 'coupon_id',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $coupon->id,
+					'value' => $invite_code->invite_id,
 			),
 			'_wpnonce' => array(
 					'id' => '_wpnonce',
@@ -123,6 +110,6 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 			),
 		);
 
-		return apply_filters( 'ms_view_coupon_edit_prepare_fields', $fields, $this );
+		return apply_filters( 'ms_view_invite_codes_edit_prepare_fields', $fields, $this );
 	}
 }
