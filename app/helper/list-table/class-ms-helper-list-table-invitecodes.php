@@ -19,13 +19,12 @@ class MS_Helper_List_Table_Invite_Codes extends MS_Helper_List_Table {
 			'membership_helper_list_table_invite_code_columns',
 			array(
 				'icb' => '<input type="checkbox" />',
-				'icode' => __( 'Invite Code', MS_TEXT_DOMAIN ),
-				//'isubscription' => __( 'Subscription', MS_TEXT_DOMAIN ),
-				'istart_date' => __( 'Valid from', MS_TEXT_DOMAIN ),
-				'iexpiry_date' => __( 'Valid upto', MS_TEXT_DOMAIN ),
-				'imembership' => __( 'Membership', MS_TEXT_DOMAIN ),
-				'iused' => __( 'Used', MS_TEXT_DOMAIN ),
-				'iremaining_uses' => __( 'Remaining uses', MS_TEXT_DOMAIN ),
+				'invite_code' => __( 'Invite Code', MS_TEXT_DOMAIN ),
+				'start_date' => __( 'Valid from', MS_TEXT_DOMAIN ),
+				'expiry_date' => __( 'Valid upto', MS_TEXT_DOMAIN ),
+				'membership_type' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'times_used' => __( 'Used', MS_TEXT_DOMAIN ),
+				'max_uses' => __( 'Maximum uses', MS_TEXT_DOMAIN ),
 			)
 		);
 	}
@@ -51,7 +50,7 @@ class MS_Helper_List_Table_Invite_Codes extends MS_Helper_List_Table {
 			$this->get_sortable_columns(),
 		);
 
-		$total_items = MS_Model_Coupon::get_coupon_count();
+		$total_items = MS_Model_Invite_Code::get_invite_codes_count();
 		$per_page = $this->get_items_per_page( 'coupon_per_page', 10 );
 		$current_page = $this->get_pagenum();
 
@@ -62,7 +61,7 @@ class MS_Helper_List_Table_Invite_Codes extends MS_Helper_List_Table {
 
 		$this->items = apply_filters(
 			'membership_helper_list_table_coupon_items',
-			MS_Model_Coupon::get_coupons( $args )
+			MS_Model_Invite_Code::get_invite_codes( $args )
 		);
 
 		$this->set_pagination_args(
@@ -110,8 +109,8 @@ class MS_Helper_List_Table_Invite_Codes extends MS_Helper_List_Table {
 		$html = '';
 		switch ( $column_name ) {
 			case 'imembership':
-				if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
-					$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
+				if ( MS_Model_Membership::is_valid_membership( $item->membership_type ) ) {
+					$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_type);
 					$html = $membership->name;
 				}
 				else {
@@ -120,8 +119,8 @@ class MS_Helper_List_Table_Invite_Codes extends MS_Helper_List_Table {
 				break;
 
 			case 'iexpiry_date':
-				if ( $item->expire_date ) {
-					$html = $item->expire_date;
+				if ( $item->expiry_date ) {
+					$html = $item->expiry_date;
 				}
 				else {
 					$html = __( 'No expiry', MS_TEXT_DOMAIN );
