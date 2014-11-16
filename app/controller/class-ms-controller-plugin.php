@@ -101,6 +101,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
 		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
+		$this->controllers['invitecodes'] = MS_Factory::create( 'MS_Controller_Invite_Codes' );
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
 		$this->controllers['page'] = MS_Factory::create( 'MS_Controller_Page' );
@@ -219,6 +220,13 @@ class MS_Controller_Plugin extends MS_Controller {
 					'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
 					'menu_slug' => self::MENU_SLUG . '-coupons',
 					'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
+				),
+				'invitecodes' => array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-invitecodes',
+					'function' => array( $this->controllers['invitecodes'], 'admin_coupon' ),
 				),
 				'addon' => array(
 					'parent_slug' => self::MENU_SLUG,
