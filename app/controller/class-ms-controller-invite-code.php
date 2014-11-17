@@ -14,29 +14,24 @@ class MS_Controller_Invite_Code extends MS_Controller {
 
 public function admin_invite_manager() {
 
-		/**
-		 * Save code add/edit
-		 */
-		$isset = array( 'submit', 'membership_id' );
+		$isset = array( 'submit', 'membership_type' );
 		if ( $this->validate_required( $isset, 'POST', false ) && $this->verify_nonce() && $this->is_admin_user() ) {
-			$msg = $this->save_coupon( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invite_code') ) ) ) ;
+			$msg = $this->save_invite_code( $_POST );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invite_id') ) ) ) ;
 			exit;
 		}
-		/**
-		 * Execute table single action.
-		 */
-		elseif( $this->validate_required( array( 'invite_code', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {
-			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['invite_code'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invite_code', 'action', '_wpnonce' ) ) ) );
+
+		elseif( $this->validate_required( array( 'invite_id', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {
+			$msg = $this->invite_code_do_action( $_GET['action'], array( $_GET['invite_id'] ) );
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invite_id', 'action', '_wpnonce' ) ) ) );
 			exit;
 		}
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( $this->validate_required( array( 'invite_code' ) ) && $this->verify_nonce( 'bulk-coupons' ) && $this->is_admin_user() ) {
+		elseif( $this->validate_required( array( 'invite_id' ) ) && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->coupon_do_action( $action, $_POST['invite_code'] );
+			$msg = $this->invite_code_do_action( $action, $_POST['invite_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 			exit;
 		}
@@ -49,7 +44,7 @@ public function admin_invite_code() {
 		$isset = array( 'action', 'invite_id' );
 		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$invite_id = ! empty( $_GET['invite_id'] ) ? $_GET['invite_id'] : 0;
-			$data['invite_code'] = MS_Factory::load( 'MS_Model_Coupon', $invite_id );
+			$data['invite_code'] = MS_Factory::load( 'MS_Model_Invite_Code', $invite_id );
 			$data['memberships'] = MS_Model_Membership::get_membership_names();
 			$data['memberships'][0] = __( 'Any', MS_TEXT_DOMAIN );
 			$data['action'] = $_GET['action'];
@@ -58,9 +53,6 @@ public function admin_invite_code() {
 			$view->data = apply_filters( 'ms_view_invite_code_edit_data', $data );
 			$view->render();
 		}
-		/**
-		 * Coupon admin list page
-		 */
 		else {
 			$view = MS_Factory::create( 'MS_View_Invite_Codes_List' );
 			$view->render();
@@ -76,7 +68,7 @@ public function invite_code_do_action( $action, $invite_codes ) {
 			foreach( $invite_codes as $invite_code ) {
 				switch( $action ) {
 					case 'delete':
-						$invite_code = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
+						$invite_code = MS_Factory::load( 'MS_Model_Invite_Code', $invite_code );
 						$invite_code->delete();
 						break;
 				}
@@ -119,6 +111,7 @@ public function enqueue_scripts() {
 			wp_enqueue_script( 'jquery-validate' );
 
 		do_action( 'ms_controller_invite_code_enqueue_scripts', $this );
-	}
+		}
 
+	}
 }

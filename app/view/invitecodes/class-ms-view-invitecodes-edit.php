@@ -35,7 +35,6 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 					'id' => 'invite_code',
 					'title' => __( 'Invite code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'placeholder'   => 'Leave Blank for a Generated code',
 					'value' => ($invite_code->invite_code) ? $invite_code->invite_code : $this->generate_code(),
 			),
 			'start_date' => array(
@@ -105,6 +104,6 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 	}
 
 	function generate_code() {
-		return uniqid();
+		return strtoupper(uniqid());
 	}
 }
