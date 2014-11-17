@@ -225,7 +225,7 @@ class MS_Controller_Plugin extends MS_Controller {
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
 					'menu_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-invitecodes',
+					'menu_slug' => self::MENU_SLUG . '-invite-codes',
 					'function' => array( $this->controllers['invitecodes'], 'admin_invite_code' ),
 				),
 				'addon' => array(
