@@ -898,7 +898,7 @@ class MS_Helper_List_Table {
 		extract( $this->_args );
 
 		$this->display_tablenav( 'top' );
-		
+
 		?>
 		<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>" cellspacing="0">
 			<thead>
