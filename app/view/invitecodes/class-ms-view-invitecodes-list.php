@@ -12,8 +12,8 @@ class MS_View_Invite_Codes_List extends MS_View {
 	 */
 	public function to_html() {
 		
-		$invitecodes_list = new MS_Helper_List_Table_Invite_Codes();
-		//$invitecodes_list->prepare_items();
+		// $invitecodes_list = new MS_Helper_List_Table_Invite_Codes();
+		// $invitecodes_list->prepare_items();
 
 		$title = __( 'Invite Codes', MS_TEXT_DOMAIN );
 		$add_new_invite_codes_button = array(
@@ -26,7 +26,7 @@ class MS_View_Invite_Codes_List extends MS_View {
 		$add_new_checkbox_signup = array(
 				'id' => 'signup-blocked',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'desc' => 'Block Sign ups for new users without Invite Codes. Existing uses will not be affected. Users can also be restricted by subscription model',
+				'title' => 'Block Sign ups for new users without Invite Codes. Existing uses will not be affected. Users can also be restricted by subscription model',
 				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
@@ -37,7 +37,7 @@ class MS_View_Invite_Codes_List extends MS_View {
 		$add_new_checkbox_show_at_login = array(
 				'id' => 'show-at-login',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'desc' => 'Show form at Sign up page',
+				'title' => 'Show form at Sign up page',
 				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
