@@ -49,7 +49,7 @@ $wpmudev_notices[] = array(
 		'protect-content_page_protected-content-billing',
 		'protect-content_page_protected-content-coupons',
 		'protect-content_page_protected-content-addon',
-		'protect-content_page_protected-content-invitecodes',
+		'protect-content_page_protected-content-invite-codes',
 		'protect-content_page_protected-content-settings',
 	)
 );
