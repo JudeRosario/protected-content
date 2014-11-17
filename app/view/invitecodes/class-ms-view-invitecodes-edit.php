@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Render Invite codes add/edit view.
- *
- * Extends MS_View for rendering methods and magic methods.
- */
-
 class MS_View_Invite_Codes_Edit extends MS_View {
 
 	protected $data;
@@ -17,9 +11,9 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 		?>
 			<div class='ms-wrap'>
 				<?php
-					$text = $this->data['invite_code']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
+					$text = !$this->data['invite_code']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
-						'title' => sprintf( __( ' %s Coupon', MS_TEXT_DOMAIN ), $text ),
+						'title' => sprintf( __( ' %s Invite Code', MS_TEXT_DOMAIN ), $text ),
 						'title_icon_class' => 'ms-fa ms-fa-pencil-square',
 					) );
 				?>
@@ -34,34 +28,30 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 		return apply_filters( 'ms_view_invite_codes_edit_to_html', $html, $this );
 	}
 
-	/**
-	 * Prepare html fields.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
 	function prepare_fields() {
 		$invite_code = $this->data['invite_code'];
 		$fields = array(
 			'invite_code' => array(
-					'id' => 'code',
+					'id' => 'invite_code',
 					'title' => __( 'Invite code', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $invite_code->invite_code,
+					'placeholder'   => 'Leave Blank for a Generated code',
+					'value' => ($invite_code->invite_code) ? $invite_code->invite_code : $this->generate_code(),
 			),
 			'start_date' => array(
 					'id' => 'start_date',
 					'title' => __( 'Start date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => ( $invite_code->start_date ) ? $invite_code->start_date : MS_Helper_Period::current_date(),
+					'value' => ( $invite_code->start_date ) ? $invite_code->start_date : "",
+					'placeholder'   => '0 = Always Valid',
 					'class' => 'ms-date',
 			),
-			'expiry_date' => array(
-					'id' => 'expiry_date',
+			'expire_date' => array(
+					'id' => 'expire_date',
 					'title' => __( 'Expiry date', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $invite_code->expiry_date,
+					'value' => $invite_code->expire_date,
+					'placeholder'   => '0 = Never Expires',
 					'class' => 'ms-date',
 			),
 			'membership_type' => array(
@@ -69,18 +59,19 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 					'field_options' => $this->data['memberships'],
-					'value' => $invite_code->membership_type,
+					'value' => ($invite_code->membership_type)? $invite_code->membership_type : "Any" ,
 			),
 			'max_uses' => array(
 					'id' => 'max_uses',
 					'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'placeholder'   => '0 = Unlimited uses',
 					'value' => $invite_code->max_uses,
 			),
-			'coupon_id' => array(
-					'id' => 'coupon_id',
+			'invite_id' => array(
+					'id' => 'invite_id',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $invite_code->invite_id,
+					'value' => $invite_code->id,
 			),
 			'_wpnonce' => array(
 					'id' => '_wpnonce',
@@ -100,7 +91,7 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
 					'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
-					'url' => remove_query_arg( array( 'action', 'coupon_id' ) ),
+					'url' => remove_query_arg( array( 'action', 'invite_id' ) ),
 					'class' => 'ms-link-button button',
 			),
 			'submit' => array(
@@ -111,5 +102,9 @@ class MS_View_Invite_Codes_Edit extends MS_View {
 		);
 
 		return apply_filters( 'ms_view_invite_codes_edit_prepare_fields', $fields, $this );
+	}
+
+	function generate_code() {
+		return uniqid();
 	}
 }
