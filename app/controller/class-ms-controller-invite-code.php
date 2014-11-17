@@ -86,41 +86,39 @@ public function invite_code_do_action( $action, $invite_codes ) {
 
 private function save_invite_code( $fields ) {
 
-	$invite_code = null;
-	$msg = false;
+		$invite_code = null;
+		$msg = false;
 
-	if( $this->is_admin_user() ) {
-		if( is_array( $fields ) ) {
-			$invite_code = ( $fields['invite_id'] ) ? $fields['invite_id'] : 0;
-			$coupon = MS_Factory::load( 'MS_Model_Invite_Code', $invite_id );
+		if( $this->is_admin_user() ) {
+			if( is_array( $fields ) ) {
+				$invite_id = ( $fields['invite_id'] ) ? $fields['invite_id'] : 0;
+				$invite_code = MS_Factory::load( 'MS_Model_Invite_Code', $invite_id );
 
-			foreach( $fields as $field => $value ) {
-				$invite_code->$field = $value;
+				foreach( $fields as $field => $value ) {
+					$invite_code->$field = $value;
+				}
+				$invite_code->save();
+				$msg = true;
 			}
-			$invite_code->save();
-			$msg = true;
 		}
-	}
 
-	return apply_filters( 'ms_model_invite_code_save_invite_code', $msg, $fields, $coupon, $this );
-}
+		return apply_filters( 'ms_model_invite_code_save_invite_code', $msg, $fields, $invite_code, $this );
+	}
 
 public function enqueue_styles() {
 		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_style( 'jquery-ui' );
 		}
 
-		do_action( 'ms_controller_invite_codes_enqueue_styles', $this );
+		do_action( 'ms_controller_invite_code_enqueue_styles', $this );
 	}
 
 public function enqueue_scripts() {
 		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui' );
 			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'ms-view-coupon-edit' );
-		}
 
-		do_action( 'ms_controller_invite_codes_enqueue_scripts', $this );
+		do_action( 'ms_controller_invite_code_enqueue_scripts', $this );
 	}
 
 }
