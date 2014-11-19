@@ -17,7 +17,7 @@ class MS_View_Gateway_Paypal_Standard_Cancel extends MS_View {
 	 * @var mixed $data
 	 */
 	protected $data;
-
+	
 	/**
 	 * Create view output.
 	 *
@@ -25,15 +25,15 @@ class MS_View_Gateway_Paypal_Standard_Cancel extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-
+		
 		$gateway = $this->data['gateway'];
 		$button = null;
-
+		
 		if( ! empty( $this->data['ms_relationship'] ) ) {
 			$ms_relationship = $this->data['ms_relationship'];
 			$membership = $ms_relationship->get_membership();
 			if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
-
+	
 				if( MS_Model_Gateway::MODE_LIVE == $gateway->mode ) {
 					$cancel_url = 'https://www.paypal.com/cgi-bin/webscr';
 				}

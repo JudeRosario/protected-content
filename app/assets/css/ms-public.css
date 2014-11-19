@@ -20,14 +20,16 @@
   /* General styles */
 }
 #wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item,
-#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item {
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item,
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item {
   position: relative;
   display: block;
   background-color: transparent;
   color: #F0F0F0;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item:after,
-#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item:after {
   content: '';
   position: absolute;
   left: 3px;
@@ -39,12 +41,20 @@
   background-color: #0A6C9C;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item,
-#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item {
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item,
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item {
   color: #FFF;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item:after,
-#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item:after {
   background-color: #0094DC;
+}
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item:after {
+  background-color: #9C2C0A;
+}
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item:after {
+  background-color: #CC4C32;
 }
 #wpadminbar #wp-toolbar .ms-exit-memberships {
   position: absolute;
@@ -261,6 +271,11 @@ label.ms-validation-error:before {
 .ms-login-form {
   margin: 1em;
 }
+.ms-login-form .ms-field:after {
+  content: '';
+  display: table;
+  clear: both;
+}
 .ms-login-form input {
   float: right;
 }
@@ -277,6 +292,3 @@ label.ms-validation-error:before {
   float: right;
   font-weight: 100;
 }
-
-
-/* 16390-1415995447 */

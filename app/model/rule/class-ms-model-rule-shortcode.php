@@ -204,7 +204,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		return apply_filters(
 			'ms_model_rule_shortcode_protect_content_shorcode_content',
-			$content,
+			do_shortcode( $content ),
 			$atts,
 			$content,
 			$code,
@@ -237,20 +237,15 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 				foreach ( $ids as $id ) {
 					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-					switch ( $membership->type ) {
-						case MS_Model_Membership::TYPE_CONTENT_TYPE:
-							// Check if the current membership is a child of the specified membership.
-							if ( $cur_membership->parent_id === $id ) {
-								$result = true;
-								break 2;
-							}
-							break;
 
-						case MS_Model_Membership::TYPE_TIER:
-							// Check if the current membership is a higher tier than the specified membership.
-
-							// TODO: Find out how to identify tier hierarchy.
+					if ( $membership->type === MS_Model_Membership::TYPE_TIER
+						|| $membership->type === MS_Model_Membership::TYPE_CONTENT_TYPE
+					) {
+						// Check if the current membership is a child of the specified membership.
+						if ( $cur_membership->parent_id === $id ) {
+							$result = true;
 							break;
+						}
 					}
 				}
 			}

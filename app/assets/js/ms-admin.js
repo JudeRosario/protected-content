@@ -1,4 +1,4 @@
-/*! Protected Content - v1.0.42
+/*! Protected Content - v1.0.43
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2014; * Licensed GPLv2+ */
 /*global window:false */
@@ -938,8 +938,19 @@ window.ms_init.view_settings = function init () {
 	});
 
 	// Reload the page when Wizard mode is activated.
-	jQuery( '.ms-slider-initial_setup' ).on( 'ms-radio-slider-updated', function() {
+	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', function() {
 		window.location = ms_data.initial_url;
+	});
+
+	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', function(ev, data) {
+		// Show/Hide the Toolbar menu for protected content.
+		if ( data.value ) {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();
+		} else {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).show();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
+		}
 	});
 
 	jQuery( '.ms-edit-url' ).click( function() {

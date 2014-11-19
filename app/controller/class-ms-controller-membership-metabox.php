@@ -106,7 +106,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		);
 		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', $post_types );
 
-		if( MS_Plugin::instance()->settings->plugin_enabled ) {
+		if( MS_Plugin::is_enabled() ) {
 			$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
 
 			$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );

@@ -81,7 +81,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			}
 		}
 
-		do_action( 'ms_model_rule_custom_post_type_group_protect_posts', $wp_query, $this );			  		 		  	  	   	
+		do_action( 'ms_model_rule_custom_post_type_group_protect_posts', $wp_query, $this );
 	}
 
 	/**

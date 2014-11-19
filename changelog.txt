@@ -4,6 +4,14 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.3
+----------------------------------------------------------------------
+- Add new Member-Filter that displays users with pending payments
+- Fix protection of menu-items when user has multiple memberships
+- Fix permission issues with protection shortcode
+- Fix small bugs with several shortcodes
+- Remove access to registration page while plugin is disabled
+
 1.0.4.2
 ----------------------------------------------------------------------
 - Add new Add-on to replace whole menus per membership-level
@@ -47,6 +55,3 @@ Change Log:
 1.0.0
 ----------------------------------------------------------------------
 - Initial version.
-
-
-16390-1415995447

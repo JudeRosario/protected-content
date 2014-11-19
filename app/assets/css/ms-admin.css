@@ -175,6 +175,16 @@
 .ms-wrap .tablenav.bottom {
   display: none;
 }
+.ms-wrap .subsubsub {
+  cursor: default;
+}
+.ms-wrap .subsubsub .group-label {
+  padding: 0 4px 0 8px;
+  color: #999;
+}
+.ms-wrap .subsubsub a {
+  cursor: pointer;
+}
 
 /* Simple List Tables */
 .ms-wrap .ms-list-table {
@@ -1096,7 +1106,7 @@
 .ms-wrap .small.ms-img-type-dripped {
   background-position: -729px -33px;
 }
-.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-content_type, .ms-wrap .wp-list-table .small.ms-img-type-tier, .ms-wrap .wp-list-table .small.ms-img-type-dripped,			  		 		  	  	   	
+.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-content_type, .ms-wrap .wp-list-table .small.ms-img-type-tier, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
 .ms-wrap .widefat .small.ms-img-type-simple,
 .ms-wrap .widefat .small.ms-img-type-content_type,
 .ms-wrap .widefat .small.ms-img-type-tier,
@@ -1241,14 +1251,16 @@
   /* General styles */
 }
 #wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item,
-#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item {
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item,
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item {
   position: relative;
   display: block;
   background-color: transparent;
   color: #F0F0F0;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item:after,
-#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item:after {
   content: '';
   position: absolute;
   left: 3px;
@@ -1260,12 +1272,20 @@
   background-color: #0A6C9C;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item,
-#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item {
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item,
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item {
   color: #FFF;
 }
 #wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item:after,
-#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item:after {
   background-color: #0094DC;
+}
+#wpadminbar #wp-toolbar .ms-unprotected > a.ab-item:after {
+  background-color: #9C2C0A;
+}
+#wpadminbar #wp-toolbar .ms-unprotected:hover > a.ab-item:after {
+  background-color: #CC4C32;
 }
 #wpadminbar #wp-toolbar .ms-exit-memberships {
   position: absolute;
@@ -1358,6 +1378,3 @@
   background-color: inherit;
   color: inherit;
 }
-
-
-/* 16390-1415995447 */

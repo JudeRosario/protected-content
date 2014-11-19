@@ -3,9 +3,9 @@
 class MS_View_Gateway_Stripe_Button extends MS_View {
 
 	protected $fields = array();
-
+	
 	protected $data;
-
+	
 	public function to_html() {
 		$this->prepare_fields();
 		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
@@ -17,9 +17,9 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 			<tr>
 				<td class='ms-buy-now-column' colspan='2' >
 					<form action="<?php echo $action_url; ?>" method="post">
-						<?php
+						<?php 
 							foreach( $this->fields as $field ) {
-								MS_Helper_Html::html_element( $field );
+								MS_Helper_Html::html_element( $field ); 
 							}
 						?>
 						<script
@@ -40,9 +40,9 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 		$html = ob_get_clean();
 		return $html;
 	}
-
+	
 	private function prepare_fields() {
-
+	
 		$this->fields = array(
 			'_wpnonce' => array(
 					'id' => '_wpnonce',

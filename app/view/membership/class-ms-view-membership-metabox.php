@@ -15,7 +15,7 @@ class MS_View_Membership_Metabox extends MS_View {
 	 * @var mixed $data
 	 */
 	protected $data;
-
+	
 	/**
 	 * Create view output.
 	 *
@@ -29,7 +29,7 @@ class MS_View_Membership_Metabox extends MS_View {
 			<?php if( ! empty( $this->data['special_page'] ) ): ?>
 				<div><?php _e( 'Membership Special Page', MS_TEXT_DOMAIN ); ?></div>
 			<?php else :?>
-				<?php
+				<?php 
 					$membership_id = $this->data['protected_content']->id;
 					$toggle = array(
 							'id' => sprintf( 'access_%s', $membership_id ),
@@ -59,10 +59,10 @@ class MS_View_Membership_Metabox extends MS_View {
 									<?php _e( 'Access', MS_TEXT_DOMAIN ); ?>
 								</th>
 							</tr>
-
+							
 							<?php foreach( $this->data['access'] as $membership_id => $data ): ?>
 								<tr>
-									<td>
+									<td> 
 										<?php echo $data['name']; ?>
 									</td>
 									<td>
@@ -80,21 +80,21 @@ class MS_View_Membership_Metabox extends MS_View {
 															'membership_id' => $membership_id,
 													),
 											);
-
+											
 											 MS_Helper_Html::html_element( $toggle );
 										?>
 									</td>
 								</tr>
-							<?php endforeach; ?>
+							<?php endforeach; ?>				
 					</tbody>
 					</table>
 				</div>
 			<?php endif;?>
 		</div>
 		<div style='clear:both;'></div>
-		<?php
+		<?php 
 		$html = ob_get_clean();
-
+		
 		return apply_filters( 'ms_view_membership_metabox_to_html', $html );
 	}
 }

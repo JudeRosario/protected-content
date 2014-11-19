@@ -1,11 +1,11 @@
 <?php
 
 class MS_View_Frontend_Profile extends MS_View {
-
+	
 	protected $data;
-
+	
 	protected $fields;
-
+	
 	public function to_html() {
 		$this->prepare_fields();
 		$cancel = array(
@@ -38,10 +38,10 @@ class MS_View_Frontend_Profile extends MS_View {
 		$html = ob_get_clean();
 		return $html;
 	}
-
+	
 	public function prepare_fields() {
 		$member = $this->data['member'];
-
+		
 		$this->fields = array(
 				'first_name' => array(
 						'id' => 'first_name',

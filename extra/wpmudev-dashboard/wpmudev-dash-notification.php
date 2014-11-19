@@ -3,7 +3,7 @@
 /* -------- WPMU DEV Dashboard Notice - Aaron Edwards (Incsub) ------- */
 if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 	class WPMUDEV_Dashboard_Notice3 {
-
+		
 		var $version = '3.0';
 		var $screen_id = false;
 		var $product_name = false;
@@ -11,17 +11,17 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 		var $theme_pack = 128;
 		var $server_url = 'http://premium.wpmudev.org/wdp-un.php';
 		var $update_count = 0;
-
+		
 		function __construct() {
 			add_action( 'init', array( &$this, 'init' ) );
 		}
-
+		
 		function init() {
 			global $wpmudev_un;
-
+			
 			if ( class_exists( 'WPMUDEV_Dashboard' ) || ( isset($wpmudev_un->version) && version_compare($wpmudev_un->version, '3.4', '<') ) )
 				return;
-
+			
 			// Schedule update jobs
 			if ( !wp_next_scheduled('wpmudev_scheduled_jobs') ) {
 				wp_schedule_event(time(), 'twicedaily', 'wpmudev_scheduled_jobs');
@@ -29,9 +29,9 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			add_action( 'wpmudev_scheduled_jobs', array( $this, 'updates_check') );
 			add_action( 'delete_site_transient_update_plugins', array( &$this, 'updates_check' ) ); //refresh after upgrade/install
 			add_action( 'delete_site_transient_update_themes', array( &$this, 'updates_check' ) ); //refresh after upgrade/install
-
+			
 			if ( is_admin() && current_user_can( 'install_plugins' ) ) {
-
+				
 				add_action( 'site_transient_update_plugins', array( &$this, 'filter_plugin_count' ) );
 				add_action( 'site_transient_update_themes', array( &$this, 'filter_theme_count' ) );
 				add_filter( 'plugins_api', array( &$this, 'filter_plugin_info' ), 20, 3 ); //run later to work with bad autoupdate plugins
@@ -39,13 +39,13 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				add_action( 'admin_init', array( &$this, 'filter_plugin_rows' ), 15 ); //make sure it runs after WP's
 				add_action( 'core_upgrade_preamble', array( &$this, 'disable_checkboxes' ) );
 				add_action( 'activated_plugin', array( &$this, 'set_activate_flag' ) );
-
+				
 				//remove version 1.0
 				remove_action( 'admin_notices', 'wdp_un_check', 5 );
 				remove_action( 'network_admin_notices', 'wdp_un_check', 5 );
 				//remove version 2.0, a bit nasty but only way
 				remove_all_actions( 'all_admin_notices', 5 );
-
+				
 				//if dashboard is installed but not activated
 				if ( file_exists(WP_PLUGIN_DIR . '/wpmudev-updates/update-notifications.php') ) {
 					if ( !get_site_option('wdp_un_autoactivated') ) {
@@ -57,7 +57,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 							return;
 						}
 					}
-
+					
 					add_action( 'admin_print_styles', array( &$this, 'notice_styles' ) );
 					add_action( 'all_admin_notices', array( &$this, 'activate_notice' ), 5 );
 				} else { //dashboard not installed at all
@@ -69,14 +69,14 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				}
 			}
 		}
-
+		
 		function is_allowed_screen() {
 			global $wpmudev_notices;
 			$screen = get_current_screen();
 			$this->screen_id = $screen->id;
-
+			
 			//Show special message right after plugin activation
-			if ( in_array( $this->screen_id, array('plugins', 'plugins-network') ) && ( isset($_GET['activate']) || isset($_GET['activate-multi']) ) ) {
+			if ( in_array( $this->screen_id, array('plugins', 'plugins-network') ) && ( isset($_GET['activate']) || isset($_GET['activate-multi']) ) ) {	
 				$activated = get_site_option('wdp_un_activated_flag');
 				if ($activated === false) $activated = 1; //on first encounter of new installed notice show
 				if ($activated) {
@@ -87,7 +87,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					return true;
 				}
 			}
-
+			
 			//always show on certain core pages if updates are available
 			$updates = get_site_option('wdp_un_updates_available');
 			if (is_array($updates) && count($updates)) {
@@ -95,7 +95,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				if ( in_array( $this->screen_id, array('plugins', 'update-core', /*'plugin-install', 'theme-install',*/ 'plugins-network', 'themes-network', /*'theme-install-network', 'plugin-install-network',*/ 'update-core-network') ) )
 					return true;
 			}
-
+			
 			//check our registered plugins for hooks
 			if ( isset($wpmudev_notices) && is_array($wpmudev_notices) ) {
 				foreach ( $wpmudev_notices as $product ) {
@@ -108,27 +108,27 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+			
 			if ( defined('WPMUDEV_SCREEN_ID') ) var_dump($this->screen_id); //for internal debugging
-
+			
 			return false;
 		}
-
+		
 		function auto_install_url() {
 			$function = is_multisite() ? 'network_admin_url' : 'admin_url';
 			return wp_nonce_url($function("update.php?action=install-plugin&plugin=install_wpmudev_dash"), "install-plugin_install_wpmudev_dash");
 		}
-
+		
 		function activate_url() {
 			$function = is_multisite() ? 'network_admin_url' : 'admin_url';
 			return wp_nonce_url($function('plugins.php?action=activate&plugin=wpmudev-updates%2Fupdate-notifications.php'), 'activate-plugin_wpmudev-updates/update-notifications.php');
 		}
-
+		
 		function install_notice() {
 			if ( !$this->is_allowed_screen() ) return;
 
 			echo '<div class="updated" id="wpmu-install-dashboard"><div class="wpmu-install-wrap"><p class="wpmu-message">';
-
+			
 			if ($this->product_name) {
 				if ($this->product_update)
 					echo 'Important updates are available for <strong>' . esc_html($this->product_name) . '</strong>. Install the free WPMU DEV Dashboard plugin now for updates and support!';
@@ -144,10 +144,10 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			echo '<div class="wpmu-more-wrap"><a href="http://premium.wpmudev.org/update-notifications-plugin-information/" class="wpmu-more-info">More Info&raquo;</a></div>';
 			echo '</div>';
 		}
-
+		
 		function activate_notice() {
 			if ( !$this->is_allowed_screen() ) return;
-
+			
 			echo '<div class="updated" id="wpmu-install-dashboard"><div class="wpmu-install-wrap"><p class="wpmu-message">';
 			if ($this->product_name) {
 				if ($this->product_update)
@@ -161,7 +161,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			}
 			echo '</p><a class="wpmu-button" href="' . $this->activate_url() . '">Activate WPMU DEV Dashboard</a></div></div>';
 		}
-
+		
 		function notice_styles() {
 			if ( !$this->is_allowed_screen() ) return;
 			?>
@@ -182,16 +182,16 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 </style>
 			<?php
 		}
-
+		
 		function get_id_plugin($plugin_file) {
 			return get_file_data( $plugin_file, array('name' => 'Plugin Name', 'id' => 'WDP ID', 'version' => 'Version') );
 		}
-
+		
 		//simple check for updates
 		function updates_check() {
 			global $wp_version;
 			$local_projects = array();
-
+	
 			//----------------------------------------------------------------------------------//
 			//plugins directory
 			//----------------------------------------------------------------------------------//
@@ -199,7 +199,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			if( empty($plugins_root) ) {
 				$plugins_root = ABSPATH . 'wp-content/plugins';
 			}
-
+	
 			$plugins_dir = @opendir($plugins_root);
 			$plugin_files = array();
 			if ( $plugins_dir ) {
@@ -224,14 +224,14 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			}
 			@closedir( $plugins_dir );
 			@closedir( $plugins_subdir );
-
+	
 			if ( $plugins_dir && !empty($plugin_files) ) {
 				foreach ( $plugin_files as $plugin_file ) {
 					if ( is_readable( "$plugins_root/$plugin_file" ) ) {
-
+	
 						unset($data);
 						$data = $this->get_id_plugin( "$plugins_root/$plugin_file" );
-
+	
 						if ( isset($data['id']) && !empty($data['id']) ) {
 							$local_projects[$data['id']]['type'] = 'plugin';
 							$local_projects[$data['id']]['version'] = $data['version'];
@@ -240,7 +240,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+	
 			//----------------------------------------------------------------------------------//
 			// mu-plugins directory
 			//----------------------------------------------------------------------------------//
@@ -248,15 +248,15 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			if( empty($mu_plugins_root) ) {
 				$mu_plugins_root = ABSPATH . 'wp-content/mu-plugins';
 			}
-
+	
 			if ( is_dir($mu_plugins_root) && $mu_plugins_dir = @opendir($mu_plugins_root) ) {
 				while (($file = readdir( $mu_plugins_dir ) ) !== false ) {
 					if ( substr($file, -4) == '.php' ) {
 						if ( is_readable( "$mu_plugins_root/$file" ) ) {
-
+	
 							unset($data);
 							$data = $this->get_id_plugin( "$mu_plugins_root/$file" );
-
+	
 							if ( isset($data['id']) && !empty($data['id']) ) {
 								$local_projects[$data['id']]['type'] = 'mu-plugin';
 								$local_projects[$data['id']]['version'] = $data['version'];
@@ -265,9 +265,9 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 						}
 					}
 				}
-				@closedir( $mu_plugins_dir );
+				@closedir( $mu_plugins_dir );	
 			}
-
+	
 			//----------------------------------------------------------------------------------//
 			// wp-content directory
 			//----------------------------------------------------------------------------------//
@@ -275,7 +275,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			if( empty($content_plugins_root) ) {
 				$content_plugins_root = ABSPATH . 'wp-content';
 			}
-
+	
 			$content_plugins_dir = @opendir($content_plugins_root);
 			$content_plugin_files = array();
 			if ( $content_plugins_dir ) {
@@ -289,13 +289,13 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				}
 			}
 			@closedir( $content_plugins_dir );
-
+	
 			if ( $content_plugins_dir && !empty($content_plugin_files) ) {
 				foreach ( $content_plugin_files as $content_plugin_file ) {
 					if ( is_readable( "$content_plugins_root/$content_plugin_file" ) ) {
 						unset($data);
 						$data = $this->get_id_plugin( "$content_plugins_root/$content_plugin_file" );
-
+	
 						if ( isset($data['id']) && !empty($data['id']) ) {
 							$local_projects[$data['id']]['type'] = 'drop-in';
 							$local_projects[$data['id']]['version'] = $data['version'];
@@ -304,7 +304,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+			
 			//----------------------------------------------------------------------------------//
 			//themes directory
 			//----------------------------------------------------------------------------------//
@@ -312,7 +312,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			if ( empty($themes_root) ) {
 				$themes_root = ABSPATH . 'wp-content/themes';
 			}
-
+	
 			$themes_dir = @opendir($themes_root);
 			$themes_files = array();
 			$local_themes = array();
@@ -338,23 +338,23 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			}
 			@closedir( $themes_dir );
 			@closedir( $themes_subdir );
-
+	
 			if ( $themes_dir && !empty($themes_files) ) {
 				foreach ( $themes_files as $themes_file ) {
-
+	
 					//skip child themes
 					if ( strpos( $themes_file, '-child' ) !== false )
 						continue;
-
+	
 					if ( is_readable( "$themes_root/$themes_file" ) ) {
-
+	
 						unset($data);
 						$data = $this->get_id_plugin( "$themes_root/$themes_file" );
-
+	
 						if ( isset($data['id']) && !empty($data['id']) ) {
 							$local_projects[$data['id']]['type'] = 'theme';
 							$local_projects[$data['id']]['filename'] = substr( $themes_file, 0, strpos( $themes_file, '/' ) );
-
+							
 							//keep record of all themes for 133 themepack
 							if ($data['id'] == $this->theme_pack) {
 								$local_themes[$themes_file]['id'] = $data['id'];
@@ -374,40 +374,40 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				}
 			}
 			update_site_option('wdp_un_local_themes', $local_themes);
-
+			
 			update_site_option('wdp_un_local_projects', $local_projects);
-
+			
 			//now check the API
 			$projects = '';
 			foreach ($local_projects as $pid => $project)
 				$projects .= "&p[$pid]=" . $project['version'];
-
+			
 			//get WP/BP version string to help with support
 			$wp = is_multisite() ? "WordPress Multisite $wp_version" : "WordPress $wp_version";
 			if ( defined( 'BP_VERSION' ) )
 				$wp .= ', BuddyPress ' . BP_VERSION;
-
+			
 			//add blog count if multisite
 			$blog_count = is_multisite() ? get_blog_count() : 1;
-
+			
 			$url = $this->server_url . '?action=check&un-version=3.3.3&wp=' . urlencode($wp) . '&bcount=' . $blog_count . '&domain=' . urlencode(network_site_url()) . $projects;
-
+	
 			$options = array(
 				'timeout' => 15,
 				'user-agent' => 'Dashboard Notification/' . $this->version
 			);
-
+	
 			$response = wp_remote_get($url, $options);
 			if ( wp_remote_retrieve_response_code($response) == 200 ) {
 				$data = $response['body'];
 				if ( $data != 'error' ) {
 					$data = unserialize($data);
 					if ( is_array($data) ) {
-
+						
 						//we've made it here with no errors, now check for available updates
 						$remote_projects = isset($data['projects']) ? $data['projects'] : array();
 						$updates = array();
-
+				
 						//check for updates
 						if ( is_array($remote_projects) ) {
 							foreach ( $remote_projects as $id => $remote_project ) {
@@ -415,7 +415,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 									//match
 									$local_version = $local_projects[$id]['version'];
 									$remote_version = $remote_project['version'];
-
+									
 									if ( version_compare($remote_version, $local_version, '>') ) {
 										//add to array
 										$updates[$id] = $local_projects[$id];
@@ -431,7 +431,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 									}
 								}
 							}
-
+				
 							//record results
 							update_site_option('wdp_un_updates_available', $updates);
 						} else {
@@ -441,11 +441,11 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				}
 			}
 		}
-
+		
 		function filter_plugin_info($res, $action, $args) {
 			global $wp_version;
 			$cur_wp_version = preg_replace('/-.*$/', '', $wp_version);
-
+			
 			//if in details iframe on update core page short-curcuit it
 			if ( ($action == 'plugin_information' || $action == 'theme_information') && strpos($args->slug, 'wpmudev_install') !== false ) {
 				$string = explode('-', $args->slug);
@@ -455,7 +455,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					echo '<iframe width="100%" height="100%" border="0" style="border:none;" src="' . $this->server_url . '?action=details&id=' . $id . '"></iframe>';
 					exit;
 				}
-
+				
 				$res = new stdClass;
 				$res->name = $updates[$id]['name'];
 				$res->slug = sanitize_title($updates[$id]['name']);
@@ -464,10 +464,10 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				$res->homepage = $updates[$id]['url'];
 				$res->download_link = '';
 				$res->tested = $cur_wp_version;
-
+				
 				return $res;
 			}
-
+			
 			if ( $action == 'plugin_information' && strpos($args->slug, 'install_wpmudev_dash') !== false ) {
 				$res = new stdClass;
 				$res->name = 'WPMU DEV Dashboard';
@@ -477,17 +477,17 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				$res->homepage = 'http://premium.wpmudev.org/project/wpmu-dev-dashboard/';
 				$res->download_link = $this->server_url . "?action=install_wpmudev_dash";
 				$res->tested = $cur_wp_version;
-
+				
 				return $res;
 			}
-
+	
 			return $res;
 		}
-
+		
 		function filter_plugin_rows() {
 			if ( !current_user_can( 'update_plugins' ) )
 				return;
-
+			
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( is_array($updates) && count($updates) ) {
 				foreach ( $updates as $id => $plugin ) {
@@ -502,7 +502,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+			
 			$local_themes = get_site_option('wdp_un_local_themes');
 			if ( is_array($local_themes) && count($local_themes) ) {
 				foreach ( $local_themes as $id => $plugin ) {
@@ -514,9 +514,9 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				}
 			}
 		}
-
+	
 		function filter_plugin_count( $value ) {
-
+			
 			//remove any conflicting slug local WPMU DEV plugins from WP update notifications
 			$local_projects = get_site_option('wdp_un_local_projects');
 			if ( is_array($local_projects) && count($local_projects) ) {
@@ -525,12 +525,12 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 						unset($value->response[$plugin['filename']]);
 				}
 			}
-
+			
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( is_array($updates) && count($updates) ) {
 				foreach ( $updates as $id => $plugin ) {
 					if ( $plugin['type'] != 'theme' && $plugin['autoupdate'] != '2' ) {
-
+						
 						//build plugin class
 						$object = new stdClass;
 						$object->url = $plugin['url'];
@@ -538,18 +538,18 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 						$object->upgrade_notice = $plugin['changelog'];
 						$object->new_version = $plugin['new_version'];
 						$object->package = '';
-
+							
 						//add to class
 						$value->response[$plugin['filename']] = $object;
 					}
 				}
 			}
-
+				
 			return $value;
 		}
-
+	
 		function filter_theme_count( $value ) {
-
+			
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( is_array($updates) && count($updates) ) {
 				foreach ( $updates as $id => $theme ) {
@@ -561,7 +561,7 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+			
 			//filter 133 theme pack themes from the list unless update is available
 			$local_themes = get_site_option('wdp_un_local_themes');
 			if ( is_array($local_themes) && count($local_themes) ) {
@@ -575,12 +575,12 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 					}
 				}
 			}
-
+			
 			return $value;
 		}
-
+	
 		function plugin_row( $file, $plugin_data ) {
-
+	
 			//get new version and update url
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( is_array($updates) && count($updates) ) {
@@ -598,10 +598,10 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			} else {
 				return false;
 			}
-
+	
 			$plugins_allowedtags = array('a' => array('href' => array(),'title' => array()),'abbr' => array('title' => array()),'acronym' => array('title' => array()),'code' => array(),'em' => array(),'strong' => array());
 			$plugin_name = wp_kses( $plugin_data['Name'], $plugins_allowedtags );
-
+	
 			$info_url = $this->server_url . '?action=details&id=' . $project_id . '&TB_iframe=true&width=640&height=800';
 			if ( file_exists(WP_PLUGIN_DIR . '/wpmudev-updates/update-notifications.php') ) {
 				$message = "Activate WPMU DEV Dashboard";
@@ -610,16 +610,16 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				$message = "Install WPMU DEV Dashboard";
 				$action_url = $this->auto_install_url();
 			}
-
+			
 			if ( current_user_can('update_plugins') ) {
 				echo '<tr class="plugin-update-tr"><td colspan="3" class="plugin-update colspanchange"><div class="update-message wpmu-update-row">';
 				printf( 'There is a new version of %1$s available on WPMU DEV. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a> or <a href="%5$s">%6$s</a> to update.', $plugin_name, esc_url($info_url), esc_attr($plugin_name), $version, esc_url($action_url), $message );
 				echo '</div></td></tr>';
 			}
 		}
-
+		
 		function themepack_row( $file, $plugin_data ) {
-
+	
 			//get new version and update url
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( isset($updates[$this->theme_pack]) ) {
@@ -630,10 +630,10 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			} else {
 				return false;
 			}
-
+	
 			$plugins_allowedtags = array('a' => array('href' => array(),'title' => array()),'abbr' => array('title' => array()),'acronym' => array('title' => array()),'code' => array(),'em' => array(),'strong' => array());
 			$plugin_name = wp_kses( $plugin_data['Name'], $plugins_allowedtags );
-
+	
 			$info_url = $this->server_url . '?action=details&id=' . $project_id . '&TB_iframe=true&width=640&height=800';
 			if ( file_exists(WP_PLUGIN_DIR . '/wpmudev-updates/update-notifications.php') ) {
 				$message = "Activate WPMU DEV Dashboard";
@@ -642,26 +642,26 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 				$message = "Install WPMU DEV Dashboard";
 				$action_url = $this->auto_install_url();
 			}
-
+			
 			if ( current_user_can('update_themes') ) {
 				echo '<tr class="plugin-update-tr"><td colspan="3" class="plugin-update colspanchange"><div class="update-message">';
 				printf( 'There is a new version of %1$s available on WPMU DEV. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a> or <a href="%5$s">%6$s</a> to update.', $plugin_name, esc_url($info_url), esc_attr($plugin_name), $version, esc_url($action_url), $message );
 				echo '</div></td></tr>';
 			}
 		}
-
+		
 		function disable_checkboxes() {
-
+	
 			$updates = get_site_option('wdp_un_updates_available');
 			if ( !is_array( $updates ) || ( is_array( $updates ) && !count( $updates ) ) ) {
 				return;
 			}
-
+		
 			$jquery = '';
 			foreach ( (array) $updates as $id => $plugin) {
 				$jquery .= "<script type='text/javascript'>jQuery(\"input:checkbox[value='".esc_attr($plugin['filename'])."']\").remove();</script>\n";
 			}
-
+	
 			//disable checkboxes for 133 theme pack themes
 			$local_themes = get_site_option('wdp_un_local_themes');
 			if ( is_array($local_themes) && count($local_themes) ) {
@@ -671,14 +671,14 @@ if ( !class_exists('WPMUDEV_Dashboard_Notice3') ) {
 			}
 			echo $jquery;
 		}
-
+		
 		function set_activate_flag($plugin) {
 			$data = $this->get_id_plugin( WP_PLUGIN_DIR . '/' . $plugin );
 			if ( isset($data['id']) && !empty($data['id']) ) {
 				update_site_option('wdp_un_activated_flag', 1);
 			}
 		}
-
+		
 	}
 	$WPMUDEV_Dashboard_Notice3 = new WPMUDEV_Dashboard_Notice3();
 }

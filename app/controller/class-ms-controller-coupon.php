@@ -26,7 +26,7 @@
  * Controller to manage Membership coupons.
  *
  * @since 1.0.0
- *
+ * 
  * @package Membership
  * @subpackage Controller
  */
@@ -143,20 +143,20 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * Save coupon using the coupon model.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param mixed $fields Coupon fields
 	 * @return boolean True in success saving.
 	 */
 	private function save_coupon( $fields ) {
-
+		
 		$coupon = null;
 		$msg = false;
-
+		
 		if( $this->is_admin_user() ) {
 			if( is_array( $fields ) ) {
 				$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
 				$coupon = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
-
+	
 				foreach( $fields as $field => $value ) {
 					$coupon->$field = $value;
 				}
@@ -164,7 +164,7 @@ class MS_Controller_Coupon extends MS_Controller {
 				$msg = true;
 			}
 		}
-
+				
 		return apply_filters( 'ms_model_coupon_save_coupon', $msg, $fields, $coupon, $this );
 	}
 
@@ -177,7 +177,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_style( 'jquery-ui' );
 		}
-
+		
 		do_action( 'ms_controller_coupon_enqueue_styles', $this );
 	}
 
@@ -192,7 +192,7 @@ class MS_Controller_Coupon extends MS_Controller {
 			wp_enqueue_script( 'jquery-validate' );
 			wp_enqueue_script( 'ms-view-coupon-edit' );
 		}
-
+		
 		do_action( 'ms_controller_coupon_enqueue_scripts', $this );
 	}
 }

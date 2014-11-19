@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
+ * 
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License, version 2, as  
+ * published by the Free Software Foundation.                           
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,      
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of       
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
+ * GNU General Public License for more details.                         
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
+ * You should have received a copy of the GNU General Public License    
+ * along with this program; if not, write to the Free Software          
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
+ * MA 02110-1301 USA                                                    
  *
 */
 
@@ -27,13 +27,13 @@
  *
  * Base hooker class provides generic interface to hook on actions and filters.
  *
- * This file is the base object of all other objects in the Membership plugin.
+ * This file is the base object of all other objects in the Membership plugin. 
  * All Membership objects inherit from this class.
  *
  * The Membership base class all other classes build on. No hooks defined here.
  *
  * @since 1.0.0
- *
+ * 
  * @package Membership
  */
 class MS_Hooker {
@@ -72,7 +72,7 @@ class MS_Hooker {
 	 * Registers an action hook.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @uses add_action() To register action hook.
 	 *
 	 * @param string $tag The name of the action to which the $method is hooked.
@@ -156,7 +156,7 @@ class MS_Hooker {
 	 * Registers a filter hook.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @uses add_filter() To register filter hook.
 	 *
 	 * @param string $tag The name of the filter to hook the $method to.
@@ -177,7 +177,7 @@ class MS_Hooker {
 	 * Removes a filter hook.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @uses remove_filter() To remove filter hook.
 	 *
 	 * @access protected
@@ -217,7 +217,7 @@ class MS_Hooker {
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns property associated with the render.
 	 *
@@ -231,7 +231,7 @@ class MS_Hooker {
 			return $this->$property;
 		}
 	}
-
+	
 	/**
 	 * Associates the render with specific property.
 	 *

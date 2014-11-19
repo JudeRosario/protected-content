@@ -88,3 +88,4 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 		);
 	}
 }
+

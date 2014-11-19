@@ -108,3 +108,4 @@ class Mailchimp_Vip {
 
 }
 
+

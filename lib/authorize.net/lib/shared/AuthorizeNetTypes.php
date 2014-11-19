@@ -21,9 +21,9 @@ class AuthorizeNetCustomer
     public $paymentProfiles = array();
     public $shipToList = array();
     public $customerProfileId;
-
+    
 }
-
+ 
 /**
  * A class that contains all fields for a CIM Address.
  *
@@ -53,12 +53,12 @@ class AuthorizeNetAddress
  */
 class AuthorizeNetPaymentProfile
 {
-
+    
     public $customerType;
     public $billTo;
     public $payment;
     public $customerPaymentProfileId;
-
+    
     public function __construct()
     {
         $this->billTo = new AuthorizeNetAddress;
@@ -77,7 +77,7 @@ class AuthorizeNetPayment
 {
     public $creditCard;
     public $bankAccount;
-
+    
     public function __construct()
     {
         $this->creditCard = new AuthorizeNetCreditCard;
@@ -111,32 +111,32 @@ class AuthorizeNetTransaction
     public $splitTenderId;
     public $approvalCode;
     public $transId;
-
+    
     public function __construct()
     {
         $this->tax = (object)array();
         $this->tax->amount = "";
         $this->tax->name = "";
         $this->tax->description = "";
-
+        
         $this->shipping = (object)array();
         $this->shipping->amount = "";
         $this->shipping->name = "";
         $this->shipping->description = "";
-
+        
         $this->duty = (object)array();
         $this->duty->amount = "";
         $this->duty->name = "";
         $this->duty->description = "";
-
+        
         // line items
-
+        
         $this->order = (object)array();
         $this->order->invoiceNumber = "";
         $this->order->description = "";
         $this->order->purchaseOrderNumber = "";
     }
-
+    
 }
 
 /**
@@ -233,7 +233,7 @@ class AuthorizeNet_Subscription
     public $shipToState;
     public $shipToZip;
     public $shipToCountry;
-
+    
     public function getXml()
     {
         $xml = "<subscription>
@@ -295,7 +295,7 @@ class AuthorizeNet_Subscription
         <country>{$this->shipToCountry}</country>
     </shipTo>
 </subscription>";
-
+        
         $xml_clean = "";
         // Remove any blank child elements
         foreach (preg_split("/(\r?\n)/", $xml) as $key => $line) {
@@ -303,7 +303,7 @@ class AuthorizeNet_Subscription
                 $xml_clean .= $line . "\n";
             }
         }
-
+        
         // Remove any blank parent elements
         $element_removed = 1;
         // Recursively repeat if a change is made
@@ -314,9 +314,10 @@ class AuthorizeNet_Subscription
                 $element_removed = 1;
             }
         }
-
+        
         // Remove any blank lines
         // $xml_clean = preg_replace('/\r\n[\s]+\r\n/','',$xml_clean);
         return $xml_clean;
     }
 }
+

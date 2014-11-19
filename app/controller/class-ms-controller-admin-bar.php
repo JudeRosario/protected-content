@@ -103,6 +103,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			else {
 				$this->add_test_membership_node();
 			}
+		} else if ( ! MS_Plugin::is_enabled() ) {
+			$this->add_unprotected_node();
 		}
 	}
 
@@ -263,6 +265,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$parents = array();
 		$current = null;
 
+		$parents[0] = false;
+
 		// The ID of the main protected-content.
 		$base_id = MS_Model_Membership::get_protected_content()->id;
 
@@ -328,13 +332,15 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		?>
 		<form id="view-site-as" method="GET">
 			<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">
-			<?php foreach ( $select_groups as $parent_id => $group ) {
+			<?php foreach ( $parents as $parent_id => $parent ) {
 				if ( $parent_id ) {
 					printf(
 						'<optgroup label="%1$s">',
 						esc_attr( $parents[ $parent_id ]->name )
 					);
 				}
+
+				$group = $select_groups[$parent_id];
 				sort( $group );
 				foreach ( $group as $option ) {
 					printf(
@@ -424,6 +430,39 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Add 'Unprotected' node.
+	 *
+	 * @since 1.0.0
+	 *
+	 */
+	private function add_unprotected_node() {
+		global $wp_admin_bar;
+
+		if ( MS_Plugin::is_enabled() ) { return; }
+		if ( MS_Plugin::is_wizard() ) { return; }
+
+		$link_url = admin_url(
+			'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings'
+		);
+
+		$wp_admin_bar->add_node(
+			apply_filters(
+				'ms_controller_admin_bar_add_unprotected_node',
+				array(
+					'id'     => 'ms-unprotected',
+					'title'  => __( 'Content Protection is disabled', MS_TEXT_DOMAIN ),
+					'href'   => $link_url,
+					'meta'   => array(
+						'class'    => 'ms-unprotected',
+						'title'    => __( 'Content of this site is unprotected', MS_TEXT_DOMAIN ),
+						'tabindex' => '1',
+					),
+				)
+			)
+		);
 	}
 
 	/**

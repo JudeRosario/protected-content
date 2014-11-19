@@ -28,7 +28,7 @@
  * Manages the activating and deactivating of Membership addons.
  *
  * @since 1.0.0
- *
+ * 
  * @package Membership
  * @subpackage Controller
  */
@@ -74,9 +74,9 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_addon() {
-
+		
 		$msg = 0;
-
+		
 		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) && $this->is_admin_user() ) {
 			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
 		}
@@ -95,7 +95,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function auto_setup_addons( $membership ) {
-
+		
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
 
 		$addon->auto_config( $membership );
@@ -159,7 +159,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * Saves activation/deactivation settings.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param string $action The action to perform on the add-on
 	 * @param object[] $addon_types The add-on or add-ons types to update.
 	 */
@@ -182,7 +182,7 @@ class MS_Controller_Addon extends MS_Controller {
 					break;
 			}
 		}
-
+		
 		$addon->save();
 		return true;
 	}

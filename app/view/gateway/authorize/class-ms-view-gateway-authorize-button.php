@@ -3,11 +3,11 @@
 class MS_View_Gateway_Authorize_Button extends MS_View {
 
 	protected $fields = array();
-
+	
 	protected $data;
-
+	
 	public function to_html() {
-
+		
 		$fields = $this->prepare_fields();
 		/** force ssl url */
 		$action_url = apply_filters( 'ms_view_gateway_authorize_button_form_action_url',
@@ -26,15 +26,15 @@ class MS_View_Gateway_Authorize_Button extends MS_View {
 					</form>
 				</td>
 			</tr>
-		<?php
+		<?php 
 		$html = ob_get_clean();
 		return $html;
 	}
-
+	
 	private function prepare_fields() {
-
+	
 		$gateway = $this->data['gateway'];
-
+		
 		$fields = array(
 				'_wpnonce' => array(
 						'id' => '_wpnonce',
@@ -71,7 +71,7 @@ class MS_View_Gateway_Authorize_Button extends MS_View {
 					'value' =>  $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
 			);
 		}
-
-		return apply_filters( 'ms_view_gateway_authorize_button_prepare_fields', $fields );
+		
+		return apply_filters( 'ms_view_gateway_authorize_button_prepare_fields', $fields ); 
 	}
 }

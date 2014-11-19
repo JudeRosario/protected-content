@@ -20,9 +20,9 @@ class AuthorizeNetSOAP extends SoapClient
     const WSDL_URL = "https://api.authorize.net/soap/v1/Service.asmx?WSDL";
     const LIVE_URL = "https://api.authorize.net/soap/v1/Service.asmx";
     const SANDBOX_URL = "https://apitest.authorize.net/soap/v1/Service.asmx";
-
+    
     public $sandbox;
-
+    
     /**
      * Constructor
      */
@@ -31,7 +31,7 @@ class AuthorizeNetSOAP extends SoapClient
         parent::__construct(self::WSDL_URL);
         $this->__setLocation(self::SANDBOX_URL);
     }
-
+    
     /**
      * Switch between the sandbox or production gateway.
      *
@@ -59,7 +59,7 @@ class AuthorizeNetSOAP extends SoapClient
         }
         return $string;
     }
-
+    
     /**
      * Get all methods as PHP Code.
      * @return string
@@ -78,7 +78,7 @@ class AuthorizeNetSOAP extends SoapClient
         }
         return $string;
     }
-
+    
     /**
      * Create a file from the WSDL for reference.
      */
@@ -93,7 +93,7 @@ class AuthorizeNetSOAP extends SoapClient
         $string .= "{\n" . $this->getSoapMethods() . "\n}\n\n" . $this->getSoapTypes() ."\n\n ?>";
         return file_put_contents($path, $string);
     }
-
-
-
+    
+    
+    
 }
