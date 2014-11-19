@@ -101,6 +101,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
 		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
+		$this->controllers['invitecodes'] = MS_Factory::create( 'MS_Controller_Invite_Code' );
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
 		$this->controllers['page'] = MS_Factory::create( 'MS_Controller_Page' );
@@ -150,6 +151,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_menu_pages() {
+
 		// Create primary menu item: Membership.
 		add_menu_page(
 			__( 'Protect Content', MS_TEXT_DOMAIN ),
@@ -160,7 +162,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			'dashicons-lock'
 		);
 
-		if ( MS_Plugin::is_wizard() ) {
+		if ( MS_Factory::load( 'MS_Model_Settings' )->initial_setup ) {
 			// Submenus definition: Wizard mode
 			$pages = array(
 				'setup' => array(
@@ -219,6 +221,13 @@ class MS_Controller_Plugin extends MS_Controller {
 					'menu_slug' => self::MENU_SLUG . '-coupons',
 					'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
 				),
+				'invitecodes' => array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Invite Codes', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-invite-codes',
+					'function' => array( $this->controllers['invitecodes'], 'admin_invite_code' ),
+				),
 				'addon' => array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
@@ -237,6 +246,10 @@ class MS_Controller_Plugin extends MS_Controller {
 
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 				unset( $pages['coupons'] );
+			}
+			
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ) ) {
+				unset( $pages['invitecodes'] );
 			}
 		}
 
