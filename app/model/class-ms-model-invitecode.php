@@ -11,7 +11,7 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 	protected $membership_type = 0;
 	protected $max_uses;
 	protected $used = 0;
-	protected $message;
+	public $message;
 
 	public $ignore_fields = array( 'message', 'actions', 'filters', 'ignore_fields', 'post_type' );
 	
@@ -48,7 +48,7 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_model_invite_code_get_invite_codes', $invite_codes, $args );
 	}
 
-	public static function load_by_invite_code_code( $code ) {
+	public static function load_by_invite_code( $code ) {
 
 		$code = sanitize_text_field( $code );
 
@@ -59,7 +59,7 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 				'fields' => 'ids',
 				'meta_query' => array(
 					array(
-							'key'     => 'code',
+							'key'     => 'invite_code',
 							'value'   => $code,
 					),
 				)
@@ -72,9 +72,10 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		$invite_id = 0;
 		if( ! empty( $item[0] ) ) {
 			$invite_id = $item[0];
+			$message = 'Invite Code Found in Database';
 		}
 
-		return apply_filters( 'ms_model_invite_code_load_by_invite_code_code', MS_Factory::load( 'MS_Model_Invite_Code', $invite_id ), $code );
+		return apply_filters( 'ms_model_invite_code_load_by_invite_code', MS_Factory::load( 'MS_Model_Invite_Code', $invite_id ), $code );
 	}
 
 	public function is_valid_invite_code( $membership_id = 0 ) {
@@ -82,12 +83,12 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		$valid = true;
 		$this->message = null;
 
-		if ( empty( $this->code ) ) {
-			$this->message = __( 'Invite Code code not found.', MS_TEXT_DOMAIN );
+		if ( empty($this->invite_code)) {
+			$this->message = __( 'Invite Code code not found.', MS_TEXT_DOMAIN ); 
 			$valid = false;
 		}
 		if( $this->max_uses && $this->used >= $this->max_uses ) {
-			$this->message = __( 'This Invite Code has been fully used up.', MS_TEXT_DOMAIN );
+			$this->message = __( 'This Invite Code has been fully used up.', MS_TEXT_DOMAIN ); 
 			$valid = false;
 		}
 		$timestamp = MS_Helper_Period::current_time( 'timestamp');
