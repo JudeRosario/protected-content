@@ -7,6 +7,12 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 
 		ob_start();
 		?>
+		<?php
+		if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
+		echo $this->invite_code_html(); 		
+		endif;
+		?>
+
 		<div class="ms-membership-form-wrapper">
 			<?php
 			if ( count( $this->data['ms_relationships'] ) > 0 ) {
@@ -94,9 +100,17 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 				}
 
+				$ic_object = MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code']);
+				$membership_types = $ic_object->__get('membership_type');
 				foreach ( $this->data['memberships'] as $membership ) {
-					$this->membership_box_html( $membership, $action, null, null );
-				}
+					if($membership->__get('id') == $ic_object->__get('membership_type') 
+						|| $membership->__get('parent_id') == $ic_object->__get('membership_type')
+						 || intval("0") == $ic_object->__get('membership_type'))
+					{
+						$this->membership_box_html( $membership, $action, null, null );
+					}
+
+		}
 				?>
 				<?php do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' ) ?>
 			</div>
@@ -104,6 +118,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 
 		<div style="clear:both;"></div>
 		<?php
+
 		$html = ob_get_clean();
 
 		return $html;
@@ -198,6 +213,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 * @param  string $action
 	 * @return array Field definitions
 	 */
+
 	private function prepare_fields( $membership_id, $action ) {
 		$fields = array(
 			'membership_id' => array(
@@ -224,6 +240,13 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				'value' => $this->data['move_from_id'],
 			);
 		}
+		if ( ! empty( $this->data['invite_code'] ) ) {
+			$fields['invite_code'] = array(
+				'id' => 'move_from_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['invite_code'],
+			);
+		}
 
 		if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $action ) {
 			$fields['action']['value'] = $action;
@@ -231,5 +254,73 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		}
 
 		return $fields;
+	}
+
+	private function invite_code_html() {
+		$message = "";
+		$valid = false;
+	if(!MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
+		return;
+	
+	// Valid Invite Code Posted
+	elseif(isset($_POST['invite_code']) && MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code'])->is_valid_invite_code()):
+		$invite_code = $_POST['invite_code'];
+		$message = "Invite Code Valid . . . Please Choose a membership type from this list";
+		$class = 'ms-alert-success';
+		$valid = true; 
+		$this->data['invite_code'] = $invite_code;
+		$this->data['membership_types'] = &$membership_types;
+		
+	// Invalid Invite Code Posted 
+	elseif(isset($_POST['invite_code']) && !MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code'])->is_valid_invite_code()):
+		$message = "Invalid Invite Code . . . Please try again ";
+		$class = 'ms-alert-error';
+		
+	// Get user inputs
+	
+	else:
+		$message = "Have an Invite Code ?";
+	endif;
+			$fields = array(
+				'invite_code' => array(
+					'id' => 'invite_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $invite_code,
+				),
+				'apply_invite_code' => array(
+					'id' => 'apply_invite_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Apply Invite Code', MS_TEXT_DOMAIN ),
+				),
+			);
+
+
+		ob_start();
+		?>
+
+		<div class="invite-form ms-membership-form-wrapper">
+		<form 
+		name="invite_code_form"
+		id="invite_code_form"
+		action="/register" 
+		method="post"
+		class="ms-login-form input">
+		<legend>Sign up using an Invite Code</legend>
+		<div>
+					<?php if ( $message ) : ?>
+						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>" ><?php
+							echo $message;
+						?></p>
+					<?php endif; ?>
+		</div>
+		<?
+		foreach ( $fields as $field ){
+			MS_Helper_Html::html_element( $field );
+		}
+		?>
+		</form>
+		</div>
+		<?php
+ 	return ob_get_clean();
 	}
 }
