@@ -4,12 +4,22 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 
 	public function to_html() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-
 		ob_start();
+		$block_option = MS_Plugin::instance()->settings->signup_blocked;
 		?>
 		<?php
+
+		// Prepare Invite Code data and object 
 		if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
-		echo $this->invite_code_html(); 		
+			if(isset($_POST['invite_code']))
+			{
+			$ic_object = MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code']) ;
+			$this->data['invite_code'] = $_POST['invite_code'];
+			$this->data['apply_invite_code'] = isset($_POST['apply_invite_code']);
+			$this->data['remove_invite_code'] = isset($_POST['remove_invite_code']);
+			$this->data['invite_code_valid'] = $ic_object->is_valid_invite_code();
+			}
+		echo $this->invite_code_html($ic_object); 		
 		endif;
 		?>
 
@@ -100,17 +110,34 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 				}
 
-				$ic_object = MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code']);
-				$membership_types = $ic_object->__get('membership_type');
-				foreach ( $this->data['memberships'] as $membership ) {
-					if($membership->__get('id') == $ic_object->__get('membership_type') 
-						|| $membership->__get('parent_id') == $ic_object->__get('membership_type')
-						 || intval("0") == $ic_object->__get('membership_type'))
-					{
+				if (MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ) && $block_option)
+				{?>
+					<div class="ms-alert-box">Membership to this site is by invite only. Contact the Site Owner for a Invite Code</div>
+					<?
+					if ($this->data['invite_code_valid'] && $block_optio ):
+						
+						foreach ( $this->data['memberships'] as $membership ) 
+						{
+							if($membership->__get('id') == $ic_object->__get('membership_type') 
+				 			|| $membership->__get('parent_id') == $ic_object->__get('membership_type')
+							|| 0 == $ic_object->__get('membership_type'))  
+					 		{
+					 			$this->membership_box_html( $membership, $action, null, null );
+					 		}
+						 }
+					elseif (!$this->data['invite_code_valid'] && $block_option )	:
+						foreach ( $this->data['memberships'] as $membership ) {
+						$this->membership_box_no_signup( $membership, $action, null, null );
+						}
+					endif;
+				}
+				// If Add on is turned off 
+				else{
+					
+					foreach ( $this->data['memberships'] as $membership ) {
 						$this->membership_box_html( $membership, $action, null, null );
 					}
-
-		}
+				}
 				?>
 				<?php do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' ) ?>
 			</div>
@@ -231,21 +258,31 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['step'],
 			),
+			
 		);
+		// Check if addon is active and pass these fields on to next form
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )) {
+			$fields['invite_code'] = array(
+				'id' => 'invite_code',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['invite_code'],
+			);
 
+			$fields['invite_code_valid'] = array(
+				'id' => 'invite_code_valid',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['invite_code_valid'],
+			);
+			
+		}
 		if ( ! empty( $this->data['move_from_id'] ) ) {
+			
 			$fields['move_from_id'] = array(
 				'id' => 'move_from_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['move_from_id'],
 			);
-		}
-		if ( ! empty( $this->data['invite_code'] ) ) {
-			$fields['invite_code'] = array(
-				'id' => 'move_from_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['invite_code'],
-			);
+
 		}
 
 		if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $action ) {
@@ -256,71 +293,132 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		return $fields;
 	}
 
-	private function invite_code_html() {
-		$message = "";
-		$valid = false;
-	if(!MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
+// Method that accepts Invite Code object, prepares fields based on object state and displays HTML form. 
+	private function invite_code_html($ic_object) {
+		
+		if(!MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ))
 		return;
 	
-	// Valid Invite Code Posted
-	elseif(isset($_POST['invite_code']) && MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code'])->is_valid_invite_code()):
-		$invite_code = $_POST['invite_code'];
-		$message = "Invite Code Valid . . . Please Choose a membership type from this list";
-		$class = 'ms-alert-success';
-		$valid = true; 
-		$this->data['invite_code'] = $invite_code;
-		$this->data['membership_types'] = &$membership_types;
-		
-	// Invalid Invite Code Posted 
-	elseif(isset($_POST['invite_code']) && !MS_Model_Invite_Code::load_by_invite_code($_POST['invite_code'])->is_valid_invite_code()):
-		$message = "Invalid Invite Code . . . Please try again ";
-		$class = 'ms-alert-error';
-		
-	// Get user inputs
-	
-	else:
-		$message = "Have an Invite Code ?";
-	endif;
+	// Prepare fields based on POST data and object state
+		$message = "";
+		$fields = array();
+		// Request contains invite code
+		if (!empty($this->data['invite_code']))
+		{
+			// Invite code is valid
+			if($ic_object->is_valid_invite_code() &&  $this->data['apply_invite_code']):
+				$message = "Invite Code Valid . . . Please choose a membership type from this list";
+				$this->data['invite_code_valid'] = true;
+				$class = 'ms-alert-success';
+					$fields = array(
+						'invite_code' => array(
+							'id' => 'invite_code',
+							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+							'value' =>$this->data['invite_code'],
+						),
+						'remove_invite_code' => array(
+							'id' => 'remove_invite_code',
+							'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+							'value' => __( 'Remove Invite Code', MS_TEXT_DOMAIN ),
+						),
+						);
+			// Invite code is not valid user removed the code 
+			else:
+				$message = "Have an Invite Code ?" ;
+				if(!$ic_object->is_valid_invite_code())
+				 	{
+				 	$message = $ic_object->message ; 
+				 	$class = 'ms-alert-error';
+				 	}
+				$this->data['invite_code_valid'] = false;
+					$fields = array(
+						'invite_code' => array(
+							'id' => 'invite_code',
+							'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+						),
+						'apply_invite_code' => array(
+							'id' => 'apply_invite_code',
+							'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+							'value' => __( 'Apply Invite Code', MS_TEXT_DOMAIN ),
+						),
+						);
+			
+			endif;
+		}
+		// No data or invite code in POST request 
+		else { 
+			$message = "Have an Invite Code ?" ;
 			$fields = array(
 				'invite_code' => array(
 					'id' => 'invite_code',
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $invite_code,
 				),
 				'apply_invite_code' => array(
 					'id' => 'apply_invite_code',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' => __( 'Apply Invite Code', MS_TEXT_DOMAIN ),
 				),
-			);
-
-
+				);
+		}
+		// The HTML form to display 
 		ob_start();
 		?>
-
 		<div class="invite-form ms-membership-form-wrapper">
-		<form 
-		name="invite_code_form"
-		id="invite_code_form"
-		action="/register" 
-		method="post"
-		class="ms-login-form input">
-		<legend>Sign up using an Invite Code</legend>
-		<div>
-					<?php if ( $message ) : ?>
-						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>" ><?php
-							echo $message;
-						?></p>
-					<?php endif; ?>
-		</div>
-		<?
-		foreach ( $fields as $field ){
-			MS_Helper_Html::html_element( $field );
-		}
-		?>
-		</form>
+			<form 
+			name="invite_code_form"
+			id="invite_code_form"
+			action="/register" 
+			method="post"
+			class="ms-login-form input">
+			<legend>Sign up using an Invite Code</legend>
+			<div>
+						<?php if ( $message ) : ?>
+							<p class="ms-alert-box <?php echo esc_attr( $class ); ?>" ><?php
+								echo $message;
+							?></p>
+						<?php endif; ?>
+			</div>
+			<?
+			foreach ( $fields as $field ){
+				MS_Helper_Html::html_element( $field );
+			}
+			?>
+			</form>
 		</div>
 		<?php
  	return ob_get_clean();
+	}
+
+	private function membership_box_no_signup( $membership ) {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		if ( 0 == $membership->price ) {
+			$price = __( 'Free', MS_TEXT_DOMAIN );
+		} else {
+			$price = sprintf(
+				'%s %s',
+				$settings->currency,
+				number_format( $membership->price, 2 )
+			);
+		}
+		$price = apply_filters( 'ms_membership_price', $price, $membership );
+
+		?>
+		
+			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>"
+				class="ms-membership-details-wrapper">
+				<div class="ms-top-bar">
+					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
+				</div>
+				<div class="ms-price-details">
+					<div class="ms-description"><?php echo $membership->description; ?></div>
+					<div class="ms-price"><?php echo esc_html( $price ); ?></div>
+
+					<?php if ( $msg ) : ?>
+						<div class="ms-bottom-msg"><?php echo $msg; ?></div>
+					<?php endif; ?>
+				</div>
+			</div>
+		<?php
 	}
 }
