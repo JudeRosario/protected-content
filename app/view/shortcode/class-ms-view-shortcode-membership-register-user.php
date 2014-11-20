@@ -3,13 +3,19 @@
 class MS_View_Shortcode_Membership_Register_User extends MS_View {
 
 	public function to_html() {
+		
+		// When redirecting to login form we want to keep the previously submitted form data.
+		$url_data = $_POST;
+		$this->data['invite_code'] = $url_data['invite_code'];
+		$this->data['invite_code_valid'] = $url_data['invite_code_valid'];
+
+
 		$fields = $this->prepare_fields();
 
 		#$ms_page = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER );
 		#$permalink = get_permalink( $ms_page->id );
 
-		// When redirecting to login form we want to keep the previously submitted form data.
-		$url_data = $_POST;
+	
 		$url_data['do-login'] = '1';
 		$login_url = add_query_arg( $url_data );
 
@@ -43,6 +49,7 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
+
 			<?php $this->render_errors(); ?>
 			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo esc_url( add_query_arg( 'action', 'register_user' ) ); ?>" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
@@ -67,7 +74,7 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 
 	public function prepare_fields() {
 		$data = $this->data;
-
+		var_dump($data['invite_code']);
 		$fields = array(
 			'membership_id' => array(
 				'id' => 'membership_id',
@@ -134,7 +141,23 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $data['step'],
 			),
+
 		);
+		// Check if addon is active and pass these fields on to next form to apply the code.
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )) {
+			$fields['invite_code'] = array(
+				'id' => 'invite_code',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $data['invite_code'],
+			);
+
+			$fields['invite_code_valid'] = array(
+				'id' => 'invite_code_valid',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $data['invite_code_valid'],
+			);
+			
+		}
 
 		return $fields;
 	}
