@@ -108,11 +108,12 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		return apply_filters( 'ms_invite_code_model_is_valid_invite_code', $valid, $membership_id, $this );
 	}
 
-	public function save_invite_code_application( $ms_relationship ) {
+	public function save_invite_code_application( $invite_code,$membership_id ) {
 		global $blog_id;
 
-		$membership = $ms_relationship->get_membership();
 
+		if(!$this->is_valid_invite_code())
+			return;
 		/** @TODO Handle for network/multsite mode.*/
 		$global = false;
 
@@ -123,7 +124,7 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		$transient_value = apply_filters( 'ms_model_invite_code_transient_value', array(
 				'invite_id' => $this->id,
 				'user_id' => $user->id,
-				'membership_id'	=> $membership->id,
+				'membership_id'	=> $membership_id,
 				'message' => $this->message,
 		) );
 
@@ -133,9 +134,11 @@ class MS_Model_Invite_Code extends MS_Model_Custom_Post_Type {
 		else {
 			set_transient( $transient_name, $transient_value, $time );
 		}
-		$this->save();
+		
+		$this->used++ ;
+		$this->save() ;
 
-		do_action( 'ms_model_invite_code_save_invite_code_application', $ms_relationship, $this );
+		do_action( 'ms_model_invite_code_save_invite_code_application', $membership_id, $this );
 	}
 
 	public static function get_invite_code_application( $user_id, $membership_id ) {
