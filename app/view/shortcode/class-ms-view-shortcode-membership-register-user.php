@@ -74,7 +74,6 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 
 	public function prepare_fields() {
 		$data = $this->data;
-		var_dump($data['invite_code']);
 		$fields = array(
 			'membership_id' => array(
 				'id' => 'membership_id',
