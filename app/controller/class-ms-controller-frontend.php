@@ -426,7 +426,18 @@ class MS_Controller_Frontend extends MS_Controller {
 			foreach ( $_REQUEST as $field => $value ) {
 				$user->$field = $value;
 			}
-
+			// Apply the Invite Code if User Registers successfully
+			if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES) 
+				&& isset($_REQUEST['invite_code_valid'],$_REQUEST['invite_code']))
+			{
+				$invite_code = $_REQUEST['invite_code'];
+				$membership_id = $_POST['membership_id'];
+				$ic_object = MS_Model_Invite_Code::load_by_invite_code($invite_code);
+					if($ic_object->is_valid_invite_code()):
+						$ic_object ->save_invite_code_application($invite_code,$membership_id);
+					endif;
+			}
+			
 			$user->save();
 			$user->signon_user();
 
