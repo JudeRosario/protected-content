@@ -199,6 +199,12 @@ class MS_Model_Settings extends MS_Model_Option {
 		'masked_url' => 'downloads',
 	);
 
+	// Settings that contol if 
+	// 1) Invite Code form must be shown at login Page 
+	// 2) Sign ups blocked without Invite Code
+
+	protected $show_at_login_form = true;
+	protected $signup_blocked = false;
 	/**
 	 * Get setting.
 	 *
