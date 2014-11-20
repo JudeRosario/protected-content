@@ -53,6 +53,7 @@ jQuery( function() {
 	// Switch between the forms.
 	show_lost.on( 'click', function() {
 		frm_login.hide();
+		jQuery('.invite-form').hide();
 		frm_lost.show();
 		sts_lost.removeClass( 'error' ).text( '' );
 		set_focus();
@@ -60,10 +61,16 @@ jQuery( function() {
 
 	show_login.on( 'click', function() {
 		frm_lost.hide();
+		jQuery('.invite-form').show();
 		frm_login.show();
 		sts_login.removeClass( 'error' ).text( '' );
 		set_focus();
 	});
+
+	jQuery('#invite_code_form').validate({
+	  	rules: {invite_code: "required"},  
+	  	messages: {invite_code: "Enter a valid invite Code"}
+	  });
 
 	// Login Handler
 	frm_login.on( 'submit', function( ev ){
