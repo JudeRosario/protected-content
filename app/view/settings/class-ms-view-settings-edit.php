@@ -55,7 +55,6 @@ class MS_View_Settings_Edit extends MS_View {
 	public function to_html() {
 		// Setup navigation tabs.
 		$tabs = $this->data['tabs'];
-
 		ob_start();
 		// Render tabbed interface.
 		?>
@@ -147,6 +146,28 @@ class MS_View_Settings_Edit extends MS_View {
 					'field' => 'menu_protection',
 				),
 			),
+
+			'signup_blocked' => array(
+				'id' => 'signup_blocked',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => 'Block Sign ups for new users without Invite Codes. Existing uses will not be affected. Users can also be restricted based on subscription model',
+				'value' => $settings->signup_blocked,
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' => 'signup_blocked',
+				),
+				),
+		
+			'show_at_login_form' => array(
+				'id' => 'show_at_login_form',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => 'Show the Invite Code form at Log-in page',
+				'value' => $settings->show_at_login_form,
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' => 'show_at_login_form',
+				),
+				),	
 		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
@@ -154,6 +175,7 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
+
 			<?php MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
 			); ?>
@@ -171,6 +193,20 @@ class MS_View_Settings_Edit extends MS_View {
 					__( 'Hide admin toolbar', MS_TEXT_DOMAIN )
 				);
 
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ) ) {
+					MS_Helper_Html::settings_box(
+						array( $fields['signup_blocked'] ),
+						__( 'Block Sign-ups without Invite Codes', MS_TEXT_DOMAIN )
+					);
+				}
+
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES ) ) {
+					MS_Helper_Html::settings_box(
+						array( $fields['show_at_login_form'] ),
+						__( 'Invite form at Login Page', MS_TEXT_DOMAIN )
+					);
+				}
+
 				MS_Helper_Html::settings_box(
 					array( $fields['initial_setup'] ),
 					__( 'Setup Wizard', MS_TEXT_DOMAIN )
@@ -182,6 +218,8 @@ class MS_View_Settings_Edit extends MS_View {
 						__( 'Advanced menu protection', MS_TEXT_DOMAIN )
 					);
 				}
+
+
 				?>
 			</form>
 		</div>
@@ -680,5 +718,6 @@ class MS_View_Settings_Edit extends MS_View {
 		<?php
 		return ob_get_clean();
 	}
+
 
 }
