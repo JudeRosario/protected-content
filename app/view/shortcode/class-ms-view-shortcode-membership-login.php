@@ -12,7 +12,6 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			'reset',
 			'lost',
 		);
-
 		extract( $this->data );
 
 		if ( ! isset( $form ) || ! in_array( $form, $valid_forms ) ) {
@@ -154,7 +153,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			'value_username' => '',
 			'value_remember' => false, // Set this to true to default the "Remember me" checkbox to checked
 		);
-
+		
 		/**
 		 * Filter the default login form output arguments.
 		 *
@@ -250,7 +249,17 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a></p>
 			<?php endif; ?>
 			</div>
+
 		</form>
+
+		<?php
+		if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
+		
+		echo $this->invite_code_html(); 
+		
+		endif;
+		?>
+
 		<?php
 		return ob_get_clean();
 	}
@@ -480,5 +489,48 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		</form>
 		<?php
 		return ob_get_clean();
+	}
+
+	private function invite_code_html() {
+	
+	if(!MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
+	return;
+
+	else: 
+	$fields = array(
+		'apply_invite_code' => array(
+			'id' => 'apply_invite_code',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Apply Invite Code', MS_TEXT_DOMAIN ),
+		),
+		'invite_code' => array(
+			'id' => 'invite_code',
+			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			'value' => $invite_code->invite_code,
+		)
+		);
+		ob_start();
+		?>
+
+		<div class="invite-form ms-membership-form-wrapper">
+		<form 
+		name="invite_code_form"
+		id="invite_code_form"
+		action="/register" 
+		method="post"
+		class="ms-login-form input">
+		<legend>Sign up using an Invite Code</legend>
+
+		<?
+		foreach ( $fields as $field ){
+			MS_Helper_Html::html_element( $field );
+		}
+		?>
+		</form>
+		</div>
+		<?php
+		endif;
+ 	return ob_get_clean();
+
 	}
 }
