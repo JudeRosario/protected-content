@@ -5,7 +5,6 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	public function to_html() {
 		$res_html = '';
 		$res_form = '';
-
 		$valid_forms = array(
 			'login',
 			'logout',
@@ -253,8 +252,8 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		</form>
 
 		<?php
-		if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES )):
-		
+		if(MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_INVITE_CODES)
+			&& MS_Plugin::instance()->settings->show_at_login_form):
 		echo $this->invite_code_html(); 
 		
 		endif;
