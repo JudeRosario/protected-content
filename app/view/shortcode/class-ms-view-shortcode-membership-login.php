@@ -489,6 +489,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		<?php
 		return ob_get_clean();
 	}
+// Outputs the needed html if Invite Codes are enabled and show at log-in option is set 
 
 	private function invite_code_html() {
 	
